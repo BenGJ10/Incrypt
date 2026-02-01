@@ -14,7 +14,10 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         // Authorize all the requests to be authenticated
-        http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
+        http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/api/about").permitAll() // No authentication for explicitly mentioned endpoints
+                .requestMatchers("/api/admin").denyAll() // Server will directly reject this endpoint
+                .anyRequest().authenticated());
         // http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
         return http.build();
