@@ -38,7 +38,7 @@ public class NoteService implements INoteService{
 
     @Override
     public List<Note> getNotesForUser(String username) {
-        List<Note> notesForUser = noteRepository.findByOwnerUsername(username);
+        List<Note> notesForUser = noteRepository.findByUsername(username);
         return notesForUser;
     }
 }

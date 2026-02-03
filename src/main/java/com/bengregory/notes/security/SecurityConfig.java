@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -15,10 +16,15 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         // Authorize all the requests to be authenticated
         http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/api/about").permitAll() // No authentication for explicitly mentioned endpoints
-                .requestMatchers("/api/admin").denyAll() // Server will directly reject this endpoint
-                .anyRequest().authenticated());
+//                .requestMatchers("/api/about").permitAll() // No authentication for explicitly mentioned endpoints
+//                .requestMatchers("/api/admin").denyAll() // Server will directly reject this endpoint
+                  .anyRequest().authenticated());
+
         // http.formLogin(withDefaults());
+
+        // Disable CSRF
+        http.csrf(AbstractHttpConfigurer::disable);
+
         http.httpBasic(withDefaults());
         return http.build();
     }
