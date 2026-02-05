@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Table(name= "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "username"),
-        @UniqueConstraint(columnNames = "email")
+        @UniqueConstraint(columnNames = "username"), // Ensure username is unique
+        @UniqueConstraint(columnNames = "email")     // Ensure email is unique
         })
 
 public class User {
@@ -45,6 +45,7 @@ public class User {
     @JsonIgnore // Don't incldue in the JSON response
     private String password;
 
+    // Define account status fields with default values
     private boolean accountNonLocked = true;
     private boolean accountNonExpired = true;
     private boolean credentialsNonExpired = true;
@@ -57,8 +58,9 @@ public class User {
     private boolean isTwoFactorEnabled = false;
     private String signUpMethod;
 
+    // Many-to-one relationship with Role, so that each user has one role
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id") // Foreign key column
     @JsonBackReference
     @ToString.Exclude
     private Role role;
