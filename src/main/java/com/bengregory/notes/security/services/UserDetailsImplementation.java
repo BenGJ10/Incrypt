@@ -1,4 +1,5 @@
 package com.bengregory.notes.security.services;
+
 import com.bengregory.notes.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -11,6 +12,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+/*
+    The Spring security uses this class for custom user details. 
+    It implements the UserDetails interface, which is used by Spring Security to
+    represent the authenticated user and their authorities (roles/permissions).
+    It provides the necessary information for Spring Security to perform authentication and authorization checks.
+ */
 
 @Data
 @NoArgsConstructor
@@ -21,7 +28,7 @@ public class UserDetailsImplementation implements UserDetails {
     private Long id;
     private String username;
     private String email;
-    @JsonIgnore
+    @JsonIgnore // Ignore this field during JSON serialization
     private String password;
     private boolean is2faEnabled;
     private Collection<? extends GrantedAuthority> authorities;
