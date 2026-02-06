@@ -35,28 +35,4 @@ public class SecurityConfig {
         http.httpBasic(withDefaults());
         return http.build();
     }
-
-    @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource){
-        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
-        if(!manager.userExists("user")){
-            manager.createUser(
-                    User.withUsername("user")
-                            .password("{noop}userpassword")
-                            .roles("USER")
-                            .build()
-            );
-        }
-
-        if(!manager.userExists("admin")){
-            manager.createUser(
-                    User.withUsername("admin")
-                            .password("{noop}password")
-                            .roles("ADMIN")
-                            .build()
-            );
-        }
-        return manager;
-    }
-    
 }

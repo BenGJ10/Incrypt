@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.catalina.User;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class Role {
     // Store the enum as a string in the database
     @Enumerated(EnumType.STRING)
     @Column(length = 20, name = "role_name")
-    private AppRole appRole;
+    private AppRole roleName;
 
 
     // Bi-directional mapping, so that we can see which users have this role
@@ -38,7 +38,7 @@ public class Role {
     @JsonBackReference
     private Set<User> users = new HashSet<>();
 
-    public Role(AppRole role){
-        this.appRole = role;
+    public Role(AppRole roleName){
+        this.roleName = roleName;
     }
 }

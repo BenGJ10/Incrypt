@@ -10,5 +10,4 @@ public class App {
         System.out.println("Hello Ben...    ");
         SpringApplication.run(App.class, args);
     }
-
 }
