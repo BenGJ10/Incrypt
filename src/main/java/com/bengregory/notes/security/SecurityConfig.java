@@ -8,21 +8,23 @@ import com.bengregory.notes.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.sql.DataSource;
-
 import java.time.LocalDate;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity // Enables Spring Security's web security support and provides the Spring MVC integration
+@EnableMethodSecurity(
+        prePostEnabled = true, // Enable pre/post annotations 
+        securedEnabled = true, // Enable @Secured annotation support
+        jsr250Enabled = true)  // Enable JSR-250 annotations like @RolesAllowed
 public class SecurityConfig {
 
     @Bean
@@ -33,21 +35,18 @@ public class SecurityConfig {
 //                .requestMatchers("/api/admin").denyAll() // Server will directly reject this endpoint
                   .anyRequest().authenticated());
 
-        // http.formLogin(withDefaults());
-
         // Disable CSRF
         http.csrf(AbstractHttpConfigurer::disable);
-
         http.httpBasic(withDefaults());
         return http.build();
     }
 
-    @Bean
+    @Bean // Bean for password encoding using BCrypt
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+    @Bean // CommandLineRunner to initialize default roles and users in the database at application startup
     public CommandLineRunner initData(RoleRepository roleRepository,
                                       UserRepository userRepository,
                                       PasswordEncoder passwordEncoder) {
