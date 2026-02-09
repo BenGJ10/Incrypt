@@ -15,8 +15,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import java.time.LocalDate;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import java.time.LocalDate;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -27,18 +29,20 @@ import static org.springframework.security.config.Customizer.withDefaults;
         jsr250Enabled = true)  // Enable JSR-250 annotations like @RolesAllowed
 public class SecurityConfig {
 
-    @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        // Authorize all the requests to be authenticated
-        http.authorizeHttpRequests((requests) -> requests
-//                .requestMatchers("/api/about").permitAll() // No authentication for explicitly mentioned endpoints
-//                .requestMatchers("/api/admin").denyAll() // Server will directly reject this endpoint
-                  .anyRequest().authenticated());
+    @Bean // Bean for configuring the security filter chain that defines how HTTP requests are secured
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception { 
+        http.csrf(
+                csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        );
+        http.authorizeHttpRequests((requests) -> requests // Authorize all the requests to be authenticated
+                //.requestMatchers("/api/admin/**").hasRole("ADMIN") // OPTIONAL: Only users with ADMIN role can access this endpoint
+                  .requestMatchers("/api/csrf-token").permitAll()
+                  .anyRequest().authenticated()); // All other requests require authentication
 
         // Disable CSRF
-        http.csrf(AbstractHttpConfigurer::disable);
-        http.httpBasic(withDefaults());
-        return http.build();
+        // http.csrf(AbstractHttpConfigurer::disable);
+        http.httpBasic(withDefaults()); // Use HTTP Basic authentication for simplicity
+        return http.build(); // Build and return the SecurityFilterChain
     }
 
     @Bean // Bean for password encoding using BCrypt
