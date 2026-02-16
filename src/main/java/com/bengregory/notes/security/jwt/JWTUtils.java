@@ -1,6 +1,4 @@
 package com.bengregory.notes.security.jwt;
-import com.bengregory.notes.security.services.UserDetailsImplementation;
-
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -10,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -44,7 +43,7 @@ public class JWTUtils {
     }
 
     // Method to generate JWT token from user details
-    public String generateTokenFromUsername(UserDetailsImplementation userDetails){
+    public String generateTokenFromUsername(UserDetails userDetails){
         String username = userDetails.getUsername();
         return Jwts.builder()
                 .subject(username)
