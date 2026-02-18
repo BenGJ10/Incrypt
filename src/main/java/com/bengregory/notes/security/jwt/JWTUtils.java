@@ -29,7 +29,7 @@ public class JWTUtils {
     private String jwtSecret; // JWT secret
 
     @Value("${spring.app.jwtExpirationMs}")
-    private String jwtExpirationMs; // Expiration time of JWT token
+    private long jwtExpirationMs; // Expiration time of JWT token
 
     // Method to extract JWT token from the Authorization header
     public String getJWTFromHeader(HttpServletRequest request){
