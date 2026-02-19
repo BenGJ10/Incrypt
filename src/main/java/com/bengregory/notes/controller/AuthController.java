@@ -51,7 +51,7 @@ public class AuthController {
     private PasswordEncoder encoder;
 
     // Method for handling user authentication requests
-    @PostMapping("/public/signin")
+    @PostMapping("/public/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication;
         // Attempt to authenticate the user using the provided username and password
@@ -135,5 +135,7 @@ public class AuthController {
         userRepository.save(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
-
 }
+// we use custom MessageResponse class to send a response message back to the client, indicating the success or failure of the registration process.
+// why we use custom MessageResponse class instead of just returning a string message?
+
