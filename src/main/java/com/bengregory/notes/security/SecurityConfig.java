@@ -45,6 +45,7 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception { 
         http.csrf(
                 csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/api/auth/public/**")
         );
         http.authorizeHttpRequests((requests) -> requests // Authorize all the requests to be authenticated
                 //.requestMatchers("/api/admin/**").hasRole("ADMIN") // OPTIONAL: Only users with ADMIN role can access this endpoint
