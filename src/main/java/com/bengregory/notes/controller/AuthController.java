@@ -11,6 +11,8 @@ import com.bengregory.notes.security.request.LoginRequest;
 import com.bengregory.notes.security.request.SignupRequest;
 import com.bengregory.notes.security.response.LoginResponse;
 import com.bengregory.notes.security.response.MessageResponse;
+import com.bengregory.notes.security.response.UserInfoResponse;
+import com.bengregory.notes.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,6 +52,9 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private UserService userService;
 
     // Method for handling user authentication requests
     @PostMapping("/public/login")
@@ -135,7 +141,34 @@ public class AuthController {
         userRepository.save(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
-}
-// we use custom MessageResponse class to send a response message back to the client, indicating the success or failure of the registration process.
-// why we use custom MessageResponse class instead of just returning a string message?
 
+    @GetMapping("/user")
+    // Method for retrieving the details of the currently authenticated user
+    public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetails userDetails) { // AuthenticationPrincipal will automatically inject the currently authenticated user's details into the method parameter
+        User user = userService.findByUsername(userDetails.getUsername());
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        UserInfoResponse userInfoResponse = new UserInfoResponse(
+                user.getUserId(),
+                user.getUserName(),
+                user.getEmail(),
+                user.isAccountNonLocked(),
+                user.isAccountNonExpired(),
+                user.isCredentialsNonExpired(),
+                user.isEnabled(),
+                user.getCredentialsExpiryDate(),
+                user.getAccountExpiryDate(),
+                user.isTwoFactorEnabled(),
+                roles
+        );
+        return ResponseEntity.ok().body(userInfoResponse);
+    }
+
+    @GetMapping("/username")
+    public String getUsername(@AuthenticationPrincipal UserDetails userDetails){
+        return (userDetails != null) ? userDetails.getUsername() : "";
+    }
+}
