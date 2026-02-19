@@ -9,6 +9,7 @@ import com.bengregory.notes.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 /*
     Service class to handle user-related operations for admin functionalities.
@@ -69,5 +70,11 @@ public class UserService implements IUserService{
                 user.getCreatedDate(),
                 user.getUpdatedDate()
         );
+    }
+
+    @Override
+    public User findByUsername(String username){
+        Optional<User> user = userRepository.findByUserName(username);
+        return user.orElseThrow(() -> new RuntimeException("Unable to find user with " + username));
     }
 }
