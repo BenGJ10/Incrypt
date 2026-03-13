@@ -1,9 +1,7 @@
 package com.bengregory.notes.dto;
 
 import com.bengregory.notes.model.Role;
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +10,8 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class UserDTO {
     private Long userId;
     private String userName;
