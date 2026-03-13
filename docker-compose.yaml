@@ -1,0 +1,34 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: incrypt_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: secure_notes_db
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: spring@password
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+        test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+  app:
+    build: .
+    container_name: incrypt_backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/secure_notes_db
+      DB_USER: springuser
+      DB_PASSWORD: spring@password
+      JWT_SECRET: mySecretJWTKey123456789013810qwasdferty1BEN67209pzsxdcfvtghbnjimkl10olpk
+      JWT_SECRET_MS: 172800000
+
+volumes:
+  mysql_data:
