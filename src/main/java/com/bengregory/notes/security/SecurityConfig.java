@@ -42,7 +42,10 @@ public class SecurityConfig {
     }
 
     @Bean // Bean for configuring the security filter chain that defines how HTTP requests are secured
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception { 
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        http.cors(withDefaults());
+
         http.csrf(
                 csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .ignoringRequestMatchers("/api/auth/public/**")
@@ -52,17 +55,19 @@ public class SecurityConfig {
                   .requestMatchers("/api/csrf-token").permitAll()
                   .requestMatchers("/api/auth/public/**").permitAll() // Allow public endpoints without authentication
                   .anyRequest().authenticated()); // All other requests require authentication
-
-
-        // http.csrf(AbstractHttpConfigurer::disable); Disable CSRF
         
         // Default exception handling for unauthorized access
         http.exceptionHandling(exception
                         -> exception.authenticationEntryPoint(unauthorizationHandler));        
+
         // Add the JWT authentication filter before the username/password authentication filter
-        http.addFilterBefore(authenticationJWTTokenFilter(), UsernamePasswordAuthenticationFilter.class);         
-        http.httpBasic(withDefaults()); // Use HTTP Basic authentication for simplicity
-        return http.build(); // Build and return the SecurityFilterChain
+        http.addFilterBefore(authenticationJWTTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        // Use HTTP Basic authentication for simplicity
+        http.httpBasic(withDefaults());
+
+        // Build and return the SecurityFilterChain
+        return http.build();
     }
 
     @Bean // Bean for the AuthenticationManager that is used to authenticate user credentials

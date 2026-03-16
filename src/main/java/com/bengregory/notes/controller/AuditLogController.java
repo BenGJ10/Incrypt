@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/audit")
+@RequestMapping("/api/audit-logs")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AuditLogController {
 

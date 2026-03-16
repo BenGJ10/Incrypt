@@ -13,12 +13,17 @@ public class NoteService implements INoteService{
     @Autowired
     private NoteRepository noteRepository;
 
+    @Autowired
+    private AuditLogService auditLogService;
+
     @Override
     public Note createNoteForUser(String username, String content) {
         Note note = new Note();
         note.setContent(content);
         note.setUsername(username);
-        return noteRepository.save(note);
+        Note newNote =  noteRepository.save(note);
+        auditLogService.logNoteCreation(username, newNote);
+        return newNote;
     }
 
     @Override
@@ -26,7 +31,9 @@ public class NoteService implements INoteService{
         Note note = noteRepository.findById(noteId).orElseThrow(
                 () -> new RuntimeException("Note not found in the db!"));
         note.setContent(content);
-        return noteRepository.save(note);
+        Note updatedNote = noteRepository.save(note);
+        auditLogService.logNoteUpdate(username, updatedNote);
+        return updatedNote;
     }
 
     @Override
@@ -34,6 +41,7 @@ public class NoteService implements INoteService{
         Note note = noteRepository.findById(noteId).orElseThrow(
                 () -> new RuntimeException("Note not found in the db!"));
         noteRepository.delete(note);
+        auditLogService.logNoteDeletion(username, noteId);
     }
 
     @Override
