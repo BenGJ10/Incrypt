@@ -2,11 +2,13 @@ package com.bengregory.notes.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class PasswordResetToken {
 
     @Id
