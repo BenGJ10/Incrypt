@@ -2,15 +2,23 @@ package com.bengregory.notes.service;
 
 import com.bengregory.notes.dto.UserDTO;
 import com.bengregory.notes.model.AppRole;
+import com.bengregory.notes.model.PasswordResetToken;
 import com.bengregory.notes.model.Role;
 import com.bengregory.notes.model.User;
+import com.bengregory.notes.repository.PasswordResetTokenRepository;
 import com.bengregory.notes.repository.RoleRepository;
 import com.bengregory.notes.repository.UserRepository;
+import com.bengregory.notes.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /*
     Service class to handle user-related operations for admin functionalities.
@@ -18,6 +26,9 @@ import java.util.Optional;
  */
 @Service
 public class UserService implements IUserService{
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,6 +38,12 @@ public class UserService implements IUserService{
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     // Retrieve all users from the database
     @Override
@@ -133,5 +150,21 @@ public class UserService implements IUserService{
         catch (Exception e){
             throw new RuntimeException("Failed to update password!");
         }
+    }
+
+    @Override
+    public void generatePasswordResetToken(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(()
+                -> new RuntimeException("Unable to find User!"));
+
+        String token = UUID.randomUUID().toString();
+        Instant expiryDate = Instant.now().plus(1, ChronoUnit.HOURS);
+        PasswordResetToken resetToken = new PasswordResetToken(token, expiryDate, user);
+        passwordResetTokenRepository.save(resetToken);
+
+        String resetUrl = frontendUrl + "/reset-password?token=" + token;
+
+        // Send email to the user
+        emailService.sendPasswordResetEmail(user.getEmail(), resetUrl);
     }
 }

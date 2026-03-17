@@ -171,4 +171,19 @@ public class AuthController {
     public String getUsername(@AuthenticationPrincipal UserDetails userDetails){
         return (userDetails != null) ? userDetails.getUsername() : "";
     }
+
+
+    // Method for handling password reset requests when a user forgets their password.
+    // It generates a password reset token and sends it to the user's email address.
+    @PostMapping("/public/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email){
+        try{
+            userService.generatePasswordResetToken(email);
+            return ResponseEntity.ok(new MessageResponse("Password rest token sent successfully..."));
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new MessageResponse("Error sending password reset token!"));
+        }
+    }
 }
