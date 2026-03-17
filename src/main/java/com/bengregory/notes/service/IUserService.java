@@ -29,4 +29,6 @@ public interface IUserService {
     void updatePassword(Long userId, String password);
 
     void generatePasswordResetToken(String email);
+
+    void resetPassword(String token, String newPassword);
 }

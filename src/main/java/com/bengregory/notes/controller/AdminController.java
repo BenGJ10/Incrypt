@@ -48,8 +48,8 @@ public class AdminController {
     }
 
     @GetMapping("/roles")
-    public List<Role> getAllRoles(){
-        return userService.getAllRoles();
+    public ResponseEntity<List<Role>> getAllRoles(){
+        return new ResponseEntity<>(userService.getAllRoles(), HttpStatus.OK);
     }
 
     @PutMapping("/update-expiry-status")

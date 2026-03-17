@@ -1,6 +1,7 @@
 package com.bengregory.notes.service;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import com.bengregory.notes.model.Note;
 import com.bengregory.notes.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,19 @@ public class NoteService implements INoteService{
     @Override
     public List<Note> getNotesForUser(String username) {
         List<Note> notesForUser = noteRepository.findByUsername(username);
+
+        boolean hasLegacyNotes = false;
+        for (Note note : notesForUser) {
+            if (note.getCreatedAt() == null) {
+                note.setCreatedAt(note.getUpdatedAt() != null ? note.getUpdatedAt() : LocalDateTime.now());
+                hasLegacyNotes = true;
+            }
+        }
+
+        if (hasLegacyNotes) {
+            noteRepository.saveAll(notesForUser);
+        }
+
         return notesForUser;
     }
 }
