@@ -47,20 +47,6 @@ public class NoteService implements INoteService{
 
     @Override
     public List<Note> getNotesForUser(String username) {
-        List<Note> notesForUser = noteRepository.findByUsername(username);
-
-        boolean hasLegacyNotes = false;
-        for (Note note : notesForUser) {
-            if (note.getCreatedAt() == null) {
-                note.setCreatedAt(note.getUpdatedAt() != null ? note.getUpdatedAt() : LocalDateTime.now());
-                hasLegacyNotes = true;
-            }
-        }
-
-        if (hasLegacyNotes) {
-            noteRepository.saveAll(notesForUser);
-        }
-
-        return notesForUser;
+        return noteRepository.findByUsername(username);
     }
 }
