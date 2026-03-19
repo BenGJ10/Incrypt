@@ -1,8 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import api from "../../services/api";
 
 const ContactPage = () => {
-  const onSubmitHandler = (event) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const onChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const onSubmitHandler = async (event) => {
     event.preventDefault();
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await api.post("/auth/public/contact", formData);
+      toast.success("Message sent! Our team will get back to you soon.");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      toast.error("Unable to send message right now. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,7 +55,10 @@ const ContactPage = () => {
             </label>
             <input
               type="text"
+              name="name"
               placeholder="Your name"
+              value={formData.name}
+              onChange={onChangeHandler}
               className="w-full px-4 py-2 border border-border-subtle rounded-lg bg-bg-surface text-text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
             />
           </div>
@@ -36,7 +69,10 @@ const ContactPage = () => {
             </label>
             <input
               type="email"
+              name="email"
               placeholder="you@example.com"
+              value={formData.email}
+              onChange={onChangeHandler}
               className="w-full px-4 py-2 border border-border-subtle rounded-lg bg-bg-surface text-text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
             />
           </div>
@@ -47,16 +83,20 @@ const ContactPage = () => {
             </label>
             <textarea
               rows="4"
+              name="message"
               placeholder="Write your message..."
+              value={formData.message}
+              onChange={onChangeHandler}
               className="w-full px-4 py-2 border border-border-subtle rounded-lg bg-bg-surface text-text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none"
             />
           </div>
 
           <button
             type="submit"
+            disabled={loading}
             className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-body font-semibold text-white shadow-sm transition-all duration-150 hover:scale-[1.02] hover:bg-primary-hover hover:shadow-md active:scale-[0.98]"
           >
-            Send Message
+            {loading ? "Sending..." : "Send Message"}
           </button>
 
         </form>

@@ -6,6 +6,7 @@ import com.bengregory.notes.model.User;
 import com.bengregory.notes.repository.RoleRepository;
 import com.bengregory.notes.repository.UserRepository;
 import com.bengregory.notes.security.jwt.JWTUtils;
+import com.bengregory.notes.security.request.ContactRequest;
 import com.bengregory.notes.security.request.LoginRequest;
 
 import com.bengregory.notes.security.request.SignupRequest;
@@ -13,6 +14,7 @@ import com.bengregory.notes.security.response.LoginResponse;
 import com.bengregory.notes.security.response.MessageResponse;
 import com.bengregory.notes.security.response.UserInfoResponse;
 import com.bengregory.notes.service.UserService;
+import com.bengregory.notes.utils.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,6 +57,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     // Method for handling user authentication requests
     @PostMapping("/public/login")
@@ -196,6 +201,17 @@ public class AuthController {
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new MessageResponse("Couldn't reset password!"));
+        }
+    }
+
+    @PostMapping("/public/contact")
+    public ResponseEntity<?> contactTeam(@Valid @RequestBody ContactRequest contactRequest) {
+        try {
+            emailService.sendContactMessage(contactRequest.getName(), contactRequest.getEmail(), contactRequest.getMessage());
+            return ResponseEntity.ok(new MessageResponse("Your message has been sent successfully."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Error sending your message. Please try again later."));
         }
     }
 }
