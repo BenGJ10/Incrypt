@@ -104,6 +104,11 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
     public void updateAccountLockStatus(Long userId, boolean lock){
         User user = userRepository.findById(userId).orElseThrow(()
                 -> new RuntimeException("Unable to find User!")
@@ -186,4 +191,12 @@ public class UserService implements IUserService{
         resetToken.setUsed(true);
         passwordResetTokenRepository.save(resetToken);
     }
+
+    @Override
+    public User registerUser(User user){
+        if (user.getPassword() != null)
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
 }

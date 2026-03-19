@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -45,8 +46,13 @@ public class JWTUtils {
     // Method to generate JWT token from user details
     public String generateTokenFromUsername(UserDetails userDetails){
         String username = userDetails.getUsername();
+        String roles = userDetails.getAuthorities().stream()
+                .map(authority -> authority.getAuthority())
+                .collect(Collectors.joining(","));
+
         return Jwts.builder()
                 .subject(username)
+                .claim("roles", roles)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key())

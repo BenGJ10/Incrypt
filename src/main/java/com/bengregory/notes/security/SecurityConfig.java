@@ -1,5 +1,6 @@
 package com.bengregory.notes.security;
 
+import com.bengregory.notes.config.OAuth2LoginSuccessHandler;
 import com.bengregory.notes.model.AppRole;
 import com.bengregory.notes.model.Role;
 import com.bengregory.notes.model.User;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -36,6 +38,10 @@ public class SecurityConfig {
     @Autowired // Handle unauthorized access attempts by sending an appropriate response (e.g., 401 Unauthorized)
     private AuthEntryPoint unauthorizationHandler;
 
+    @Autowired
+    @Lazy
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
     @Bean // Bean for the authentication token filter that processes JWT tokens in incoming requests
     public AuthTokenFilter authenticationJWTTokenFilter(){
         return new AuthTokenFilter();
@@ -54,8 +60,12 @@ public class SecurityConfig {
                 //.requestMatchers("/api/admin/**").hasRole("ADMIN") // OPTIONAL: Only users with ADMIN role can access this endpoint
                   .requestMatchers("/api/csrf-token").permitAll()
                   .requestMatchers("/api/auth/public/**").permitAll() // Allow public endpoints without authentication
-                  .anyRequest().authenticated()); // All other requests require authentication
-        
+                  .anyRequest().authenticated()) // All other requests require authentication
+                  .oauth2Login(oauth2 ->{
+                        oauth2.successHandler(oAuth2LoginSuccessHandler);
+                  });
+
+
         // Default exception handling for unauthorized access
         http.exceptionHandling(exception
                         -> exception.authenticationEntryPoint(unauthorizationHandler));        

@@ -4,6 +4,7 @@ import com.bengregory.notes.dto.UserDTO;
 import com.bengregory.notes.model.Role;
 import com.bengregory.notes.model.User;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface IUserService {
@@ -18,6 +19,8 @@ public interface IUserService {
 
     User findByUsername(String username);
 
+    Optional<User> findByEmail(String email);
+
     void updateAccountLockStatus(Long userId, boolean lock);
 
     void updateAccountExpiryStatus(Long userId, boolean expire);
@@ -31,4 +34,6 @@ public interface IUserService {
     void generatePasswordResetToken(String email);
 
     void resetPassword(String token, String newPassword);
+
+    User registerUser(User user);
 }
