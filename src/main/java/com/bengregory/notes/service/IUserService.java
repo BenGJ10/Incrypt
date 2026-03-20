@@ -3,6 +3,8 @@ package com.bengregory.notes.service;
 import com.bengregory.notes.dto.UserDTO;
 import com.bengregory.notes.model.Role;
 import com.bengregory.notes.model.User;
+import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -36,4 +38,12 @@ public interface IUserService {
     void resetPassword(String token, String newPassword);
 
     User registerUser(User user);
+
+    GoogleAuthenticatorKey generate2FASecret(Long userId);
+
+    boolean validate2FACode(Long userId, int code);
+
+    void enable2FA(Long userId);
+
+    void disable2FA(Long userId);
 }
