@@ -1,6 +1,14 @@
 import { MdDateRange } from "react-icons/md";
-import { auditLogsTruncateTexts } from "./truncateText";
 import { getAuditActionBadgeClasses } from "./auditLogActionStyle";
+
+const getPrivacySafeNoteLabel = (action) => {
+  const actionUpper = String(action || "").toUpperCase();
+
+  if (actionUpper === "CREATE") return "Created Note";
+  if (actionUpper === "UPDATE") return "Updated Note";
+  if (actionUpper === "DELETE") return "Deleted Note";
+  return "Note Activity";
+};
 
 export const auditLogscolumn = [
   {
@@ -88,10 +96,7 @@ export const auditLogscolumn = [
     cellClassName: "text-slate-700 font-normal  ",
     renderHeader: (params) => <span className="ps-10">Note Content</span>,
     renderCell: (params) => {
-      const contens = JSON.parse(params?.value)?.content;
-
-      const response = auditLogsTruncateTexts(contens, 50);
-
+      const response = getPrivacySafeNoteLabel(params?.row?.actions);
       return <p className=" text-slate-700 text-center   ">{response}</p>;
     },
   },

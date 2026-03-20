@@ -3,36 +3,19 @@ import api from "../../services/api";
 import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import toast from "react-hot-toast";
-import { auditLogsTruncateTexts } from "../../utils/truncateText.js";
 import { getAuditActionBadgeClasses } from "../../utils/auditLogActionStyle.js";
 import Errors from "../Errors.js";
 import moment from "moment";
 import { MdDateRange } from "react-icons/md";
 import Card from "../ui/Card";
 
-const getNotePreview = (value) => {
-  if (value === null || value === undefined) {
-    return "";
-  }
+const getPrivacySafeNoteLabel = (action) => {
+  const actionUpper = String(action || "").toUpperCase();
 
-  if (typeof value !== "string") {
-    return String(value);
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return "";
-  }
-
-  try {
-    const parsed = JSON.parse(trimmed);
-    if (parsed && typeof parsed === "object" && "content" in parsed) {
-      return String(parsed.content ?? "");
-    }
-    return trimmed;
-  } catch {
-    return trimmed;
-  }
+  if (actionUpper === "CREATE") return "Created Note";
+  if (actionUpper === "UPDATE") return "Updated Note";
+  if (actionUpper === "DELETE") return "Deleted Note";
+  return "Note Activity";
 };
 
 const gridSx = {
@@ -132,9 +115,7 @@ export const auditLogcolumns = [
     align: "center",
     renderHeader: () => <span>Note Content</span>,
     renderCell: (params) => {
-      const content = getNotePreview(params?.value);
-      const response = auditLogsTruncateTexts(content);
-
+      const response = getPrivacySafeNoteLabel(params?.row?.actions);
       return <p className="text-center text-text-main">{response}</p>;
     },
   },

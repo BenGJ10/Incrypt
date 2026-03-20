@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Buttons from "../utils/Buttons";
 import { motion } from "framer-motion";
+import { FiActivity, FiShield, FiZap } from "react-icons/fi";
 import Brands from "./LandingPageCom/Brands/Brands";
 import State from "./LandingPageCom/State";
 import Testimonial from "./LandingPageCom/Testimonial/Testimonial";
@@ -89,17 +90,48 @@ const LandingPage = () => {
             initial="hidden"
             animate="visible"
             variants={fadeInFromBotom}
-            className="rounded-2xl border border-border-subtle bg-bg-surface p-5 shadow-card-md"
+            className="group relative overflow-hidden rounded-2xl border border-border-subtle bg-bg-surface p-5 shadow-card-md transition-shadow duration-200 hover:shadow-custom"
           >
-            <h2 className="mb-3 text-h3 font-semibold text-text-main">
-              A calm space for your notes
-            </h2>
-            <p className="mb-5 text-body text-text-muted">
+            <div className="pointer-events-none absolute -right-14 -top-14 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
+
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-h3 font-semibold text-text-main transition-colors duration-300 group-hover:text-primary">
+                A calm space for your notes
+              </h2>
+              <span className="inline-flex items-center gap-1 rounded-full border border-border-subtle bg-bg-subtle px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted transition-all duration-300 group-hover:border-primary/30 group-hover:text-primary">
+                <span className="h-2 w-2 rounded-full bg-green-500" />
+                Live Protected
+              </span>
+            </div>
+
+            <p className="mb-5 text-body text-text-muted transition-colors duration-300 group-hover:text-text-main">
               See a snapshot of how Incrypt keeps your information organized and
               secure at a glance.
             </p>
+
+            <div className="mb-5 grid gap-2 sm:grid-cols-3">
+              <div className="rounded-lg border border-border-subtle bg-bg-subtle/80 px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30">
+                <div className="flex items-center gap-2 text-[11px] font-medium text-text-muted">
+                  <FiShield className="text-primary" />
+                  Encrypted
+                </div>
+              </div>
+              <div className="rounded-lg border border-border-subtle bg-bg-subtle/80 px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30">
+                <div className="flex items-center gap-2 text-[11px] font-medium text-text-muted">
+                  <FiZap className="text-primary" />
+                  Fast Access
+                </div>
+              </div>
+              <div className="rounded-lg border border-border-subtle bg-bg-subtle/80 px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30">
+                <div className="flex items-center gap-2 text-[11px] font-medium text-text-muted">
+                  <FiActivity className="text-primary" />
+                  Reliable
+                </div>
+              </div>
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl bg-primary/5 p-4">
+              <div className="rounded-xl bg-primary/5 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-primary/10">
                 <p className="text-[11px] font-medium uppercase tracking-wide text-primary">
                   Private by default
                 </p>
@@ -107,7 +139,7 @@ const LandingPage = () => {
                   Every note lives in your account and stays tied to you.
                 </p>
               </div>
-              <div className="rounded-xl bg-bg-subtle p-4">
+              <div className="rounded-xl bg-bg-subtle p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-white">
                 <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
                   Simple to use
                 </p>
@@ -115,7 +147,7 @@ const LandingPage = () => {
                   A writing experience that feels light, focused, and familiar.
                 </p>
               </div>
-              <div className="rounded-xl bg-bg-subtle p-4">
+              <div className="rounded-xl bg-bg-subtle p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-white">
                 <p className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
                   Built for focus
                 </p>
@@ -123,7 +155,7 @@ const LandingPage = () => {
                   No feeds or distractions—just your content in a clean layout.
                 </p>
               </div>
-              <div className="rounded-xl bg-primary/5 p-4">
+              <div className="rounded-xl bg-primary/5 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-primary/10">
                 <p className="text-[11px] font-medium uppercase tracking-wide text-primary">
                   Backed by Incrypt
                 </p>
@@ -149,14 +181,17 @@ const LandingPage = () => {
             <Brands />
           </section>
 
-          <section>
+          <section className="rounded-2xl border border-border-subtle bg-bg-surface px-4 py-6 shadow-card-md sm:px-6">
             <State />
           </section>
 
           <section className="pb-10">
-            <h2 className="mb-10 text-center text-h2 font-semibold text-text-main">
+            <h2 className="mb-3 text-center text-h2 font-semibold text-text-main">
               What people are saying
             </h2>
+            <p className="mx-auto mb-10 max-w-2xl text-center text-body text-text-muted">
+              Realistic user voices from teams and individuals using Incrypt daily for secure, focused note workflows.
+            </p>
             <Testimonial />
           </section>
         </div>

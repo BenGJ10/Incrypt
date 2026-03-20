@@ -19,28 +19,28 @@ const Footer = () => {
 
         <div className="flex items-center gap-3">
           <a
-            href="https://facebook.com"
+            href="https://facebook.com/"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle text-text-muted hover:bg-primary hover:text-white transition-colors duration-200"
           >
             <FaFacebookF size={16} />
           </a>
 
           <a
-            href="https://linkedin.com"
+            href="https://linkedin.com/in/bengj10"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle text-text-muted hover:bg-primary hover:text-white transition-colors duration-200"
           >
             <FaLinkedinIn size={16} />
           </a>
 
           <a
-            href="https://twitter.com"
+            href="https://twitter.com/"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle text-text-muted hover:bg-primary hover:text-white transition-colors duration-200"
           >
             <FaTwitter size={16} />
           </a>
 
           <a
-            href="https://instagram.com"
+            href="https://instagram.com/bengj10"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle text-text-muted hover:bg-primary hover:text-white transition-colors duration-200"
           >
             <FaInstagram size={16} />

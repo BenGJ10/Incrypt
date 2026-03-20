@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { IoMenu, IoPencilOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { useMyContext } from "../store/ContextApi";
+import { motion } from "framer-motion";
 import Button from "./ui/Button";
 
 const Navbar = () => {
@@ -32,15 +33,29 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 bg-bg-surface border-b border-border-subtle">
       <nav className="flex h-headerHeight items-center justify-between px-4 sm:px-8 lg:px-10">
         {/* Brand */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white">
-            <IoPencilOutline className="text-lg" />
-          </div>
+        <Link to="/" className="group flex items-center gap-3">
+          <motion.div
+            className="relative flex h-10 w-10 items-center justify-center"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+          >
+            <span className="absolute -inset-1 rounded-xl bg-primary/20 blur-[6px] opacity-75 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-primary/25 bg-gradient-to-br from-primary to-blue-600 text-white shadow-sm transition-transform duration-300 group-hover:scale-105">
+              <IoPencilOutline className="text-lg" />
+            </div>
+          </motion.div>
+
           <div className="flex flex-col">
-            <span className="text-h3 font-semibold text-text-main leading-none">
+            <motion.span
+              className="text-h3 font-semibold leading-none text-text-main"
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.45 }}
+            >
               Incrypt
-            </span>
-            <span className="text-[11px] text-text-muted leading-none mt-0.5">
+            </motion.span>
+            <span className="mt-0.5 text-[11px] leading-none text-text-muted transition-colors duration-200 group-hover:text-primary/80">
               Secure notes made simple
             </span>
           </div>
