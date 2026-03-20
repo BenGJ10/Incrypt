@@ -13,6 +13,7 @@ import com.bengregory.notes.security.request.SignupRequest;
 import com.bengregory.notes.security.response.LoginResponse;
 import com.bengregory.notes.security.response.MessageResponse;
 import com.bengregory.notes.security.response.UserInfoResponse;
+import com.bengregory.notes.security.services.UserDetailsImplementation;
 import com.bengregory.notes.service.TotpService;
 import com.bengregory.notes.service.UserService;
 import com.bengregory.notes.utils.AuthUtils;
@@ -92,7 +93,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Retrieving the authenticated user's details from the authentication object
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserDetailsImplementation userDetails = (UserDetailsImplementation) authentication.getPrincipal();
 
         // Generating a JWT token for the authenticated user using their username
         String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
@@ -186,6 +187,20 @@ public class AuthController {
         return (userDetails != null) ? userDetails.getUsername() : "";
     }
 
+    @PostMapping("/update-credentials")
+    public ResponseEntity<?> updateCredentials(@RequestParam String newUsername,
+                                               @RequestParam(required = false) String newPassword,
+                                               @RequestParam(required = false) String token) {
+        try {
+            Long userId = authUtils.loggedInUserId();
+            userService.updateUserCredentials(userId, newUsername, newPassword);
+            return ResponseEntity.ok(new MessageResponse("Credentials updated successfully. Please log in again if username changed."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse(e.getMessage()));
+        }
+    }
+
 
     // Method for handling password reset requests when a user forgets their password
     // It generates a password reset token and sends it to the user's email address
@@ -269,7 +284,11 @@ public class AuthController {
     public ResponseEntity<?> get2FAStatus() {
         User user = authUtils.loggedInUser();
         if(user != null){
-            return ResponseEntity.ok().body(Map.of("is2FAEnabled", user.isTwoFactorEnabled()));
+            boolean enabled = user.isTwoFactorEnabled();
+            return ResponseEntity.ok().body(Map.of(
+                    "is2faEnabled", enabled,
+                    "is2FAEnabled", enabled
+            ));
         }
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }   

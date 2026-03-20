@@ -1,4 +1,5 @@
 package com.bengregory.notes.security.jwt;
+import com.bengregory.notes.security.services.UserDetailsImplementation;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -44,7 +45,7 @@ public class JWTUtils {
     }
 
     // Method to generate JWT token from user details
-    public String generateTokenFromUsername(UserDetails userDetails){
+    public String generateTokenFromUsername(UserDetailsImplementation userDetails){
         String username = userDetails.getUsername();
         String roles = userDetails.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
@@ -53,6 +54,7 @@ public class JWTUtils {
         return Jwts.builder()
                 .subject(username)
                 .claim("roles", roles)
+                .claim("is2faEnabled", userDetails.isIs2faEnabled())
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key())

@@ -21,7 +21,7 @@ public class AuditLogService implements IAuditLogService{
         log.setAction("CREATE");
         log.setUsername(username);
         log.setNoteId(note.getId());
-        log.setNoteContent(note.getContent());
+        log.setNoteContent("Created Note");
         log.setTimestamp(LocalDateTime.now());
         auditLogRepository.save(log);
     }
@@ -32,7 +32,7 @@ public class AuditLogService implements IAuditLogService{
         log.setAction("UPDATE");
         log.setUsername(username);
         log.setNoteId(note.getId());
-        log.setNoteContent(note.getContent());
+        log.setNoteContent("Updated Note");
         log.setTimestamp(LocalDateTime.now());
         auditLogRepository.save(log);
     }
@@ -43,6 +43,7 @@ public class AuditLogService implements IAuditLogService{
         log.setAction("DELETE");
         log.setUsername(username);
         log.setNoteId(noteId);
+        log.setNoteContent("Deleted Note");
         log.setTimestamp(LocalDateTime.now());
         auditLogRepository.save(log);
     }

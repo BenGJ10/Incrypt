@@ -170,6 +170,33 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public void updateUserCredentials(Long userId, String newUsername, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Unable to find User!"));
+
+        if (newUsername == null || newUsername.trim().isEmpty()) {
+            throw new RuntimeException("Username is required.");
+        }
+
+        String normalizedUsername = newUsername.trim();
+        if (!normalizedUsername.equals(user.getUserName()) && userRepository.existsByUserName(normalizedUsername)) {
+            throw new RuntimeException("Username is already taken.");
+        }
+
+        user.setUserName(normalizedUsername);
+
+        // Password update is optional so username-only updates can still succeed.
+        if (newPassword != null && !newPassword.trim().isEmpty()) {
+            if (newPassword.length() < 6) {
+                throw new RuntimeException("Password must be at least 6 characters.");
+            }
+            user.setPassword(passwordEncoder.encode(newPassword));
+        }
+
+        userRepository.save(user);
+    }
+
+    @Override
     // Generate a password reset token for the user with the given email and send a reset link via email
     public void generatePasswordResetToken(String email){
         User user = userRepository.findByEmail(email).orElseThrow(()
